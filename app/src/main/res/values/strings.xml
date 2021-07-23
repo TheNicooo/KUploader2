@@ -1,0 +1,19 @@
+<resources>
+    <string name="app_name">KUploader2</string>
+    <string name="save">GUARDAR</string>
+    <string name="connect">INICIAR</string>
+    <string name="chooseFile">SELECCIONAR RUTA</string>
+
+    //LOGIN
+    <string name="email">EMAIL</string>
+    <string name="password">PASSWORD</string>
+
+    //ADD SERVER
+    <string name="nameServer">NOMBRE</string>
+    <string name="urlServer">URL SERVIDOR</string>
+
+    //UPLOAD FILE
+    <string name="localPath">Ruta local: </string>
+    <string name="serverUpload">Servidor: </string>
+
+</resources>

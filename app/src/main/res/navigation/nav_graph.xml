@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    app:startDestination="@+id/login">
+
+    <fragment
+        android:id="@+id/login"
+        android:name="com.kauel.kuploader2.ui.login.LoginFragment"
+        android:label="Login"
+        tools:layout="@layout/fragment_login">
+        <action
+            android:id="@+id/action_login_to_userServer"
+            app:destination="@id/userServer" />
+        <action
+            android:id="@+id/action_login_to_uploadFileFragment"
+            app:destination="@id/uploadFileFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/userServer"
+        android:name="com.kauel.kuploader2.ui.formServer.FormServerFragment"
+        android:label="Add server"
+        tools:layout="@layout/fragment_form_server"/>
+    <fragment
+        android:id="@+id/uploadFileFragment"
+        android:name="com.kauel.kuploader2.ui.uploadFile.UploadFileFragment"
+        android:label="UploadFileFragment"
+        tools:layout="@layout/fragment_upload_file"/>
+
+</navigation>
