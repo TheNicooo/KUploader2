@@ -149,8 +149,8 @@ class FormServerFragment : Fragment(R.layout.fragment_form_server), FormServerAd
 //    }
 
     override fun onDestroyView() {
-        super.onDestroyView()
         _binding = null
+        super.onDestroyView()
     }
 
     override fun onItemClick(server: Server) {

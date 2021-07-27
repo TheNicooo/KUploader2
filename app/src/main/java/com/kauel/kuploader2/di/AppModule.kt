@@ -9,8 +9,10 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import java.util.concurrent.TimeUnit
 import javax.inject.Singleton
 
 @Module
@@ -23,6 +25,7 @@ object AppModule {
         Retrofit.Builder()
             .baseUrl(URL_BASE)
             .addConverterFactory(GsonConverterFactory.create())
+            //.client(client().build())
             .build()
 
     @Provides
@@ -39,4 +42,12 @@ object AppModule {
 
     @Provides
     fun provideServerDao(db: AppDatabase) = db.serverDao()
+
+//    private fun client(): OkHttpClient.Builder {
+//        return OkHttpClient.Builder().apply {
+//            readTimeout(30, TimeUnit.SECONDS)
+//            writeTimeout(30, TimeUnit.SECONDS)
+//            connectTimeout(30, TimeUnit.SECONDS)
+//        }
+//    }
 }

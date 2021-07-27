@@ -192,14 +192,15 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
             putString("PASSWORD", binding.edtPassword.text.toString())
             putInt("ID_SERVER", idSpinner)
             putString("TOKEN", token)
+            putString("URL", url)
             putString("NAME_SERVER", nameServer)
             apply()
         }
     }
 
     override fun onDestroyView() {
-        super.onDestroyView()
         _binding = null
+        super.onDestroyView()
     }
 }
 

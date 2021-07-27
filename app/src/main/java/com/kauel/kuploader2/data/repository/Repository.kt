@@ -2,19 +2,10 @@ package com.kauel.kuploader2.data.repository
 
 import androidx.room.withTransaction
 import com.kauel.kuploader2.api.ApiService
-import com.kauel.kuploader2.api.responceApi.ResponseAPI
 import com.kauel.kuploader2.api.server.Server
 import com.kauel.kuploader2.data.AppDatabase
-import com.kauel.kuploader2.utils.Resource
 import com.kauel.kuploader2.utils.networkBoundResource
-import kotlinx.coroutines.flow.emitAll
-import kotlinx.coroutines.flow.flow
-import okhttp3.MediaType
 import okhttp3.MultipartBody
-import okhttp3.RequestBody
-import retrofit2.Response
-import java.io.File
-import java.util.concurrent.Flow
 import javax.inject.Inject
 
 class Repository @Inject constructor(
@@ -23,6 +14,7 @@ class Repository @Inject constructor(
 ) {
     private val loginDao = appDatabase.loginDao()
     private val serverDao = appDatabase.serverDao()
+    private val responseDao = appDatabase.responseDao()
 
     fun login(url: String, email: String, password: String) = networkBoundResource(
         databaseQuery = {
@@ -34,28 +26,68 @@ class Repository @Inject constructor(
         saveCallResult = {
             appDatabase.withTransaction {
                 loginDao.deleteAllLogin()
-                //loginDao.insertLogin(it)
+                loginDao.insertLogin(it)
             }
         }
     )
 
-//    fun uploadFile(file: File, url: String, token: String): Flow<Resource<ResponseAPI>> {
+//    fun uploadFileFlow(file: File, url: String, token: String): Flow<Resource<ResponseAPI>> {
 //
 //        return flow {
 //
-//            emit(Resource.Loading(null))
+//            emit(Resource.Loading())
 //
 //            val requestFile: RequestBody =
 //                RequestBody.create(MediaType.parse("multipart/form-data"), file)
 //            val image = MultipartBody.Part.createFormData("file", file.name, requestFile)
 //
 //            when (val upload = apiService.uploadImage(url = url, token = token, image = image)) {
-//                is Resource.Success(upload.data) -> emit(Resource.Success(upload.data))
+//                is Resource.Success -> emit(Resource.Success(upload))
 //
-//                is Resource.Error<T> -> emit(Resource.Error())
+//                is Result.Error -> emit(
+//                    Resource.Error(
+//                        throwable = Throwable.localizedMessage,
+//                        data = upload
+//                    )
+//                )
 //            }
 //        }
 //    }
+
+//    suspend fun getCategories(offset : Int, limit : Int, country : String ): Flow<CustomResult<AlbumsResponse>>
+//    return flow {
+//        try {
+//            emit(CustomResult.Loading(true))
+//            val url = "$baseUrl$endpointAlbums?country=$country&limit=$limit&offset=$offset"
+//            val response =
+//                client.request<AlbumsResponse>(url) {
+//                    method = HttpMethod.Get
+//                    headers {
+//                        append("Accept", "application/json")
+//                        append("Authorization", "Bearer $authKey")
+//                    }
+//                }
+//            emit(CustomResult.Success(response))
+//        }catch (e : Exception){
+//            emit(CustomResult.Error.RecoverableError(e))
+//        }
+//    }.flowOn(Dispatchers.IO)
+//}
+
+    fun uploadFile(file: MultipartBody.Part, url: String, token: String) = networkBoundResource(
+        databaseQuery = {
+            responseDao.getAllResponse()
+        },
+        networkCall = {
+            apiService.uploadImage(url, token, file)
+        },
+        saveCallResult = {
+            appDatabase.withTransaction {
+                responseDao.deleteAllResponse()
+                responseDao.uploadFile(it)
+            }
+        }
+    )
 
     suspend fun insertServer(server: Server) {
         appDatabase.withTransaction {

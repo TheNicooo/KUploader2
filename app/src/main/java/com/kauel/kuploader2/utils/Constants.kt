@@ -1,6 +1,7 @@
 package com.kauel.kuploader2.utils
 
 const val URL_LOGIN = "login"
+const val URL_FILE = "processFile"
 const val URL_BASE = "https://alertaenap-testing.azurewebsites.net/api/"
 
 const val ERROR_LOGIN = "Email o password incorrect!"
