@@ -1,5 +1,6 @@
 package com.kauel.kuploader2.ui.uploadFile
 
+import android.annotation.SuppressLint
 import android.app.Activity.RESULT_OK
 import android.content.Context
 import android.content.Intent
@@ -35,7 +36,7 @@ class UploadFileFragment : Fragment(R.layout.fragment_upload_file) {
     private var token: String? = ""
     private var url: String? = ""
     private var flagLoading: Boolean = false
-
+    private var flagStop: Boolean = false
     private var filepath: File? = null
 
 
@@ -58,6 +59,7 @@ class UploadFileFragment : Fragment(R.layout.fragment_upload_file) {
     private fun setUpView() {
         binding.apply {
             pbLoadingUpload.gone()
+            lyProgressUpload.gone()
 
             btnChoosePath.setOnClickListener(View.OnClickListener {
                 val intent = Intent()
@@ -66,8 +68,17 @@ class UploadFileFragment : Fragment(R.layout.fragment_upload_file) {
             })
 
             imgUpload.setOnClickListener {
-                if (listFile.size > 0)
+                flagStop = false
+                if (listFile.size > 0) {
                     uploadFileToServer(listFile.first())
+                } else {
+                    activity?.makeToast("Seleccionar ruta de fotos!")
+                }
+            }
+
+            imgStop.setOnClickListener {
+                flagStop = true
+                activity?.makeToast("Subida de imagenes detenida!")
             }
         }
     }
@@ -87,11 +98,13 @@ class UploadFileFragment : Fragment(R.layout.fragment_upload_file) {
             var gpath: String = Environment.getExternalStorageDirectory().absolutePath
             filepath =
                 File((gpath + File.separator + data?.data?.path).replace("tree/primary:", ""))
-            binding.edtPathFiles.text = filepath.toString()
+            val path = filepath.toString()
+            binding.edtPathFiles.text = "RUTA: $path"
 
             if (filepath!!.isDirectory) {
                 listFiles(filepath!!)
                 createFolder(File(gpath + File.separator))
+                binding.imgUpload.setImageDrawable(resources.getDrawable(R.drawable.cloud_upload))
             } else
                 Toast.makeText(
                     activity,
@@ -115,12 +128,15 @@ class UploadFileFragment : Fragment(R.layout.fragment_upload_file) {
                 is Resource.Error -> {
                     activity?.makeToast(result.error.toString())
                     appendLog(result.error.toString())
-                    binding.pbLoadingUpload.gone()
+                    //binding.pbLoadingUpload.gone()
+                    showProgressUpload(false)
                     flagLoading = false
+                    //uploadFileToServer(listFile.first())
                 }
                 is Resource.Loading -> {
                     activity?.makeToast("LOADING")
-                    binding.pbLoadingUpload.visible()
+                    //binding.pbLoadingUpload.visible()
+                    showProgressUpload(true)
                     flagLoading = true
                 }
                 is Resource.Success -> {
@@ -129,21 +145,32 @@ class UploadFileFragment : Fragment(R.layout.fragment_upload_file) {
                             moveFile(listFile.first(), true)
                             listFile.removeAt(0)
                             if (listFile.size > 0) {
-                                activity?.makeToast("Remaining: ${listFile.size}")
-                                flagLoading = false
-                                uploadFileToServer(listFile.first())
+                                if (flagStop) {
+                                    activity?.makeToast("Stop!")
+                                    showProgressUpload(false)
+                                } else {
+                                    activity?.makeToast("Remaining: ${listFile.size}")
+                                    flagLoading = false
+                                    uploadFileToServer(listFile.first())
+                                }
                             }
                         }
                     } else if (listFile.size == 0) {
                         flagLoading = false
                         listFiles(filepath!!)
-                        if (listFile.size > 0) {
-                            uploadFileToServer(listFile.first())
+                        if (flagStop) {
+                            activity?.makeToast("Stop!")
+                            showProgressUpload(false)
                         } else {
-                            activity?.makeToast("No remaining files")
-                            binding.pbLoadingUpload.gone()
+                            if (listFile.size > 0) {
+                                uploadFileToServer(listFile.first())
+                            } else {
+                                activity?.makeToast("No remaining files")
+                                //binding.pbLoadingUpload.gone()
+                                showProgressUpload(false)
+                                binding.imgUpload.setImageDrawable(resources.getDrawable(R.drawable.cloud_done))
+                            }
                         }
-                        //binding.pbLoadingUpload.gone()
                     }
                 }
             }
@@ -168,11 +195,26 @@ class UploadFileFragment : Fragment(R.layout.fragment_upload_file) {
         viewModel.uploadFile(url, token, image)
     }
 
+    private fun showProgressUpload(status: Boolean) {
+        if (status) {
+            binding.apply {
+                pbLoadingUpload.visible()
+                lyProgressUpload.visible()
+            }
+        } else {
+            binding.apply {
+                pbLoadingUpload.gone()
+                lyProgressUpload.gone()
+            }
+        }
+    }
+
     private fun moveFile(file: File, status: Boolean) {
         var path = ""
 
         if (status) {
-            path = Environment.getExternalStorageDirectory().absolutePath + File.separator + "History photo upload/"
+            path =
+                Environment.getExternalStorageDirectory().absolutePath + File.separator + "History photo upload/"
         }
 
         file.let { sourceFile ->
@@ -181,37 +223,11 @@ class UploadFileFragment : Fragment(R.layout.fragment_upload_file) {
         }
     }
 
-//    private val CHANNEL_ID = "channel_id_example_01"
-//    private val notificationId = 101
-//
-//    private fun createNotificationChannel() {
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-//            val name = "Notification Title"
-//            val descriptionText = "Notification Description"
-//            val importance = NotificationManager.IMPORTANCE_DEFAULT
-//            val channel = NotificationChannel(CHANNEL_ID, name, importance).apply {
-//                description = descriptionText
-//            }
-//            val notificationManager: NotificationManager = activity?.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-//            notificationManager.createNotificationChannel(channel)
-//        }
-//    }
-//
-//    private fun sendNotification() {
-//        val builder = activity?.let {
-//            NotificationCompat.Builder(it.baseContext, CHANNEL_ID)
-//                .setSmallIcon(R.mipmap.ic_launcher)
-//                .setContentTitle("File Upload")
-//                .setContentText("Upload image")
-//                .setPriority(NotificationCompat.PRIORITY_LOW)
-//                .setProgress(100, 0, true)
-//        }
-//
-//        with(NotificationManagerCompat.from(this)) {
-//            notify(notificationId, builder!!.build())
-//        }
-//
-//    }
+    private fun createFolder(path: File) {
+        val folder = File(path, "History photo upload")
+        if (!folder.exists())
+            folder.mkdir()
+    }
 
     //Append Log file
     private fun appendLog(text: String?) {
@@ -239,17 +255,6 @@ class UploadFileFragment : Fragment(R.layout.fragment_upload_file) {
             // Auto-generated catch block
             e.printStackTrace()
         }
-    }
-
-    private fun createFolder(path: File) {
-        val folder = File(path, "History photo upload")
-        if (!folder.exists())
-            folder.mkdir()
-
-        //Move file
-//        val sourcePath = Paths.get("C:/Users/sampleuser/Downloads/test.txt")
-//        val targetPath = Paths.get("C:/Users/sampleuser/Documents/test.txt")
-//        Files.move(sourcePath, targetPath, StandardCopyOption.REPLACE_EXISTING)
     }
 
     override fun onDestroyView() {

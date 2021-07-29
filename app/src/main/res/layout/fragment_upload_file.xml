@@ -33,12 +33,29 @@
             android:layout_gravity="center"
             android:src="@drawable/cloud_queue" />
 
-        <ProgressBar
-            android:id="@+id/pbLoadingUpload"
+        <LinearLayout
+            android:id="@+id/lyProgressUpload"
             android:layout_width="match_parent"
-            android:layout_height="40dp"
-            style="?android:attr/progressBarStyleHorizontal"
-            android:indeterminate="true" />
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <ProgressBar
+                android:id="@+id/pbLoadingUpload"
+                android:layout_width="200dp"
+                android:layout_height="50dp"
+                style="?android:attr/progressBarStyleHorizontal"
+                android:indeterminate="true"
+                android:layout_marginRight="10dp"
+                android:layout_marginLeft="15dp"/>
+
+            <ImageView
+                android:id="@+id/imgStop"
+                android:layout_width="35dp"
+                android:layout_height="35dp"
+                android:layout_gravity="center"
+                android:src="@drawable/cancel" />
+
+        </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
