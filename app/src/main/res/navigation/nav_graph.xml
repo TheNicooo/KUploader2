@@ -8,7 +8,7 @@
     <fragment
         android:id="@+id/login"
         android:name="com.kauel.kuploader2.ui.login.LoginFragment"
-        android:label="Login"
+        android:label="Iniciar sesión"
         tools:layout="@layout/fragment_login">
         <action
             android:id="@+id/action_login_to_userServer"
@@ -21,12 +21,12 @@
     <fragment
         android:id="@+id/userServer"
         android:name="com.kauel.kuploader2.ui.formServer.FormServerFragment"
-        android:label="Add server"
+        android:label="Agregar servidor"
         tools:layout="@layout/fragment_form_server"/>
     <fragment
         android:id="@+id/uploadFileFragment"
         android:name="com.kauel.kuploader2.ui.uploadFile.UploadFileFragment"
-        android:label="UploadFileFragment"
+        android:label="Subir imágenes"
         tools:layout="@layout/fragment_upload_file"/>
 
 </navigation>

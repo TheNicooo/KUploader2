@@ -25,8 +25,16 @@ object AppModule {
         Retrofit.Builder()
             .baseUrl(URL_BASE)
             .addConverterFactory(GsonConverterFactory.create())
-            //.client(client().build())
+            .client(client().build())
             .build()
+
+    private fun client(): OkHttpClient.Builder {
+        return OkHttpClient.Builder().apply {
+            readTimeout(30, TimeUnit.SECONDS)
+            writeTimeout(30, TimeUnit.SECONDS)
+            connectTimeout(30, TimeUnit.SECONDS)
+        }
+    }
 
     @Provides
     @Singleton
@@ -43,11 +51,4 @@ object AppModule {
     @Provides
     fun provideServerDao(db: AppDatabase) = db.serverDao()
 
-//    private fun client(): OkHttpClient.Builder {
-//        return OkHttpClient.Builder().apply {
-//            readTimeout(30, TimeUnit.SECONDS)
-//            writeTimeout(30, TimeUnit.SECONDS)
-//            connectTimeout(30, TimeUnit.SECONDS)
-//        }
-//    }
 }

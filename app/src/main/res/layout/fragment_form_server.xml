@@ -22,7 +22,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginVertical="20dp"
-            android:text="Add Server"
+            android:text="@string/titleFormServer"
             android:textColor="@color/orangeKauel"
             android:textSize="18sp"
             android:textStyle="bold" />
@@ -107,7 +107,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginVertical="20dp"
-            android:text="List Server"
+            android:text="@string/titleListServer"
             android:textColor="@color/orangeKauel"
             android:textSize="18sp"
             android:textStyle="bold" />

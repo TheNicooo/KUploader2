@@ -1,6 +1,9 @@
 package com.kauel.kuploader2.ui.uploadFile
 
-import androidx.lifecycle.*
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.kauel.kuploader2.api.responseApi.ResponseAPI
 import com.kauel.kuploader2.data.repository.Repository
 import com.kauel.kuploader2.utils.Resource
@@ -8,10 +11,8 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
-import okhttp3.MediaType
+import kotlinx.coroutines.withContext
 import okhttp3.MultipartBody
-import okhttp3.RequestBody
-import java.io.File
 import javax.inject.Inject
 
 @HiltViewModel
@@ -23,9 +24,11 @@ class UploadFileViewModel @Inject constructor(
     val uploadLiveData: LiveData<Resource<ResponseAPI>> = uploadFileMutableLiveData
 
     fun uploadFile(url: String, token: String, file: MultipartBody.Part) {
-        viewModelScope.launch {
-            repository.uploadFile(file, url, token).collect {
-                uploadFileMutableLiveData.value = it
+        viewModelScope.launch(Dispatchers.Main) {
+            withContext(Dispatchers.IO) {
+                repository.uploadFile(file, url, token).collect {
+                    uploadFileMutableLiveData.postValue(it)
+                }
             }
         }
     }
