@@ -94,7 +94,7 @@
 
                 <EditText
                     android:id="@+id/edtPassword"
-                    android:layout_width="match_parent"
+                    android:layout_width="220dp"
                     android:layout_height="wrap_content"
                     android:layout_toRightOf="@+id/passwordIcon"
                     android:ems="10"
@@ -113,6 +113,15 @@
                     android:layout_centerVertical="true"
                     android:layout_marginLeft="12dp"
                     android:src="@drawable/password"/>
+
+                <ImageView
+                    android:id="@+id/showPassword"
+                    android:layout_width="50dp"
+                    android:layout_height="20dp"
+                    android:layout_centerVertical="true"
+                    android:layout_toRightOf="@id/edtPassword"
+                    android:layout_marginRight="12dp"
+                    android:src="@drawable/eye_open"/>
 
             </RelativeLayout>
 

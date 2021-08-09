@@ -33,6 +33,16 @@
             android:layout_gravity="center"
             android:src="@drawable/cloud_queue" />
 
+        <TextView
+            android:id="@+id/tvNameImage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:padding="10dp"
+            android:textSize="12sp"
+            tools:text="asdasdasdasdasdasdasdasdasdasdasdasdasdsadasdasdasdasdasdaasdasd"/>
+
         <LinearLayout
             android:id="@+id/lyProgressUpload"
             android:layout_width="match_parent"

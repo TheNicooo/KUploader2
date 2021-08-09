@@ -2,6 +2,7 @@ package com.kauel.kuploader2.ui.login
 
 import android.content.Context
 import android.os.Bundle
+import android.text.InputType
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -103,6 +104,20 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
                 }
 
             }
+
+            var show = false
+
+            showPassword.setOnClickListener {
+                if (show) {
+                    edtPassword.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
+                    binding.showPassword.setImageDrawable(resources.getDrawable(R.drawable.eye_open))
+                    show = false
+                } else {
+                    edtPassword.inputType = 1
+                    binding.showPassword.setImageDrawable(resources.getDrawable(R.drawable.eye_close))
+                    show = true
+                }
+            }
         }
 
     }
@@ -123,9 +138,7 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
             when (result) {
                 is Resource.Error -> showErrorView(result.error)
                 is Resource.Loading -> showLoadingView()
-                is Resource.Success -> {
-                    showSuccessView(result.data)
-                }
+                is Resource.Success -> showSuccessView(result.data)
             }
         })
 
@@ -169,7 +182,17 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
         showControls()
         binding.apply {
             progressBar.gone()
-            Toast.makeText(activity, ERROR_LOGIN, Toast.LENGTH_SHORT).show()
+            Toast.makeText(activity, error?.message?.let { messageError(it) }, Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    private fun messageError(error: String): String {
+        return when(error) {
+            ERROR_403 -> ERROR_LOGIN
+
+            ERROR_404 -> ERROR_SERVER
+
+            else -> error
         }
     }
 
