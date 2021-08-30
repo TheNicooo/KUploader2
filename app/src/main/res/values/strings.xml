@@ -5,8 +5,8 @@
     <string name="chooseFile">SELECCIONAR RUTA</string>
 
     //LOGIN
-    <string name="email">EMAIL</string>
-    <string name="password">PASSWORD</string>
+    <string name="email">CORREO</string>
+    <string name="password">CONTRASEÑA</string>
 
     //ADD SERVER
     <string name="titleFormServer">Agregar servidor</string>
@@ -18,5 +18,13 @@
     <string name="titleUploadFiles">Subir imágenes</string>
     <string name="localPath">Ruta local: </string>
     <string name="serverUpload">Servidor: </string>
+    <string name="countImage">Subida/Restante: </string>
+    <string name="testUpload">TEST CARGA</string>
+
+    //TEST UPLOAD FILE
+    <string name="titleTestUploadFiles">Prueba de carga de imagenes</string>
+    <string name="dateStart">Fecha inicio: </string>
+    <string name="dateEnd">Fecha termino: </string>
+    <string name="timer">Tiempo: </string>
 
 </resources>

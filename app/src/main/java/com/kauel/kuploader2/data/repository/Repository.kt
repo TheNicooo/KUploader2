@@ -89,6 +89,21 @@ class Repository @Inject constructor(
         }
     )
 
+    fun uploadTestFile(file: MultipartBody.Part, url: String) = networkBoundResource(
+        databaseQuery = {
+            responseDao.getAllResponse()
+        },
+        networkCall = {
+            apiService.uploadTestImage(url, file)
+        },
+        saveCallResult = {
+            appDatabase.withTransaction {
+                responseDao.deleteAllResponse()
+                responseDao.uploadFile(it)
+            }
+        }
+    )
+
     suspend fun insertServer(server: Server) {
         appDatabase.withTransaction {
             serverDao.insert(server)

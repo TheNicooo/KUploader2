@@ -12,7 +12,7 @@ import com.kauel.kuploader2.utils.Converters
     entities = [Login::class,
         Server::class,
         ResponseAPI::class],
-    version = 7,
+    version = 1,
     exportSchema = false
 )
 @TypeConverters(Converters::class)

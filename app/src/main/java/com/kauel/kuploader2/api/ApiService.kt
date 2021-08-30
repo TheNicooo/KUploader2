@@ -23,4 +23,11 @@ interface ApiService {
         @Header("Authorization") token: String,
         @Part image: MultipartBody.Part
     ): ResponseAPI
+
+    @Multipart
+    @POST()
+    suspend fun uploadTestImage(
+        @Url url: String,
+        @Part image: MultipartBody.Part
+    ): ResponseAPI
 }

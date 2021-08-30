@@ -20,6 +20,7 @@ import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat.IMPORTANCE_LOW
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import com.kauel.kuploader2.MainActivity
 import com.kauel.kuploader2.R
 import com.kauel.kuploader2.databinding.FragmentUploadFileBinding
@@ -83,6 +84,7 @@ class UploadFileFragment : Fragment(R.layout.fragment_upload_file) {
             pbLoadingUpload.gone()
             lyProgressUpload.gone()
             tvNameImage.gone()
+            rlCountImage.gone()
 
             btnChoosePath.setOnClickListener(View.OnClickListener {
                 val intent = Intent()
@@ -91,18 +93,25 @@ class UploadFileFragment : Fragment(R.layout.fragment_upload_file) {
             })
 
             imgUpload.setOnClickListener {
-                flagStop = false
-                if (!isUploading) {
-                    if (listFile.size > 0) {
-                        isUploading = true
-                        uploadFileToServer(listFile.first())
-                        //sendCommandToService(ACTION_START_SERVICE)
+                try {
+                    flagStop = false
+                    if (!isUploading) {
+                        startProcessUpload()
+                        if (listFile.size > 0) {
+                            isUploading = true
+                            uploadFileToServer(listFile.first())
+                            //sendCommandToService(ACTION_START_SERVICE)
+                        } else {
+                            activity?.makeToast(EMPTY_PATH)
+                            //sendCommandToService(ACTION_STOP_SERVICE)
+                        }
                     } else {
-                        activity?.makeToast(EMPTY_PATH)
-                        //sendCommandToService(ACTION_STOP_SERVICE)
+                        activity?.makeToast(UPLOAD_START)
                     }
-                } else {
-                    activity?.makeToast(UPLOAD_START)
+                } catch (ex: Exception) {
+                    val error = ex.localizedMessage
+                    appendLog("UploadFileFragment setUpView-imgUpload.setOnClickListener $error")
+                    activity?.makeToast(error)
                 }
             }
 
@@ -110,6 +119,10 @@ class UploadFileFragment : Fragment(R.layout.fragment_upload_file) {
                 flagStop = true
                 activity?.makeToast(UPLOAD_STOP)
                 //sendCommandToService(ACTION_STOP_SERVICE)
+            }
+
+            imgTestUpload.setOnClickListener {
+                findNavController().navigate(R.id.action_uploadFileFragment_to_uploadTestFileFragment)
             }
         }
     }
@@ -125,7 +138,7 @@ class UploadFileFragment : Fragment(R.layout.fragment_upload_file) {
         if (path != "") {
             filepath = File(path)
             binding.edtPathFiles.text = "RUTA: $path"
-            startProcessUpload()
+            //startProcessUpload()
         }
     }
 
@@ -142,7 +155,7 @@ class UploadFileFragment : Fragment(R.layout.fragment_upload_file) {
             binding.edtPathFiles.text = "RUTA: $path"
 
             if (filepath!!.isDirectory) {
-                startProcessUpload()
+                //startProcessUpload()
                 createFolder(File(gpath + File.separator))
             } else
                 Toast.makeText(
@@ -243,10 +256,8 @@ class UploadFileFragment : Fragment(R.layout.fragment_upload_file) {
         viewModel.uploadLiveData.observeForever { result ->
             when (result) {
                 is Resource.Error -> {
-                    //activity?.makeToast(result.error.toString())
-                    appendLog(result.error.toString())
-                    //showProgressUpload(false)
-                    //showNotificationEnd(true)
+                    val error = result.error.toString()
+                    appendLog("UploadFileFragment initObservers-Error $error")
                     if (flagLoading) {
                         flagLoading = false
                         if (flagError) {
@@ -261,9 +272,9 @@ class UploadFileFragment : Fragment(R.layout.fragment_upload_file) {
                     }
                 }
                 is Resource.Loading -> {
-                    //activity?.makeToast("LOADING")
                     position++
                     showProgressUpload(true, position, (listFile.size - 1))
+                    showCountImage(true, position, (listFile.size - 1))
                     flagLoading = true
                 }
                 is Resource.Success -> {
@@ -274,21 +285,19 @@ class UploadFileFragment : Fragment(R.layout.fragment_upload_file) {
                             } else {
                                 moveFile(listFile.first(), false)
                             }
-                            //listFile.removeAt(0)
                             listFiles(filepath!!)
                             if (listFile.size > 0) {
                                 if (flagStop) {
-                                    //activity?.makeToast("Stop!")
                                     showProgressUpload(false)
                                     showNotificationEnd(2)
                                 } else {
-                                    //activity?.makeToast("Remaining: ${listFile.size}")
                                     flagLoading = false
                                     uploadFileToServer(listFile.first())
                                 }
                             } else {
                                 flagLoading = false
                                 showProgressUpload(false)
+                                showCountImage(false)
                                 showNotificationEnd(3)
                                 binding.imgUpload.setImageDrawable(resources.getDrawable(R.drawable.cloud_done))
                                 position = 0
@@ -339,6 +348,16 @@ class UploadFileFragment : Fragment(R.layout.fragment_upload_file) {
                 lyProgressUpload.gone()
                 tvNameImage.gone()
             }
+        }
+    }
+
+    private fun showCountImage(status: Boolean, numImage: Int = 0, totalImage: Int = 0) {
+        binding.apply {
+            edtCountImage.text = "Subidas/Restantes: $numImage / $totalImage"
+            if (status)
+                rlCountImage.visible()
+            else
+                rlCountImage.gone()
         }
     }
 

@@ -1,0 +1,30 @@
+<resources>
+    <string name="app_name">K-Uploader</string>
+    <string name="save">GUARDAR</string>
+    <string name="connect">INICIAR</string>
+    <string name="chooseFile">SELECCIONAR RUTA</string>
+
+    //LOGIN
+    <string name="email">CORREO</string>
+    <string name="password">CONTRASEÑA</string>
+
+    //ADD SERVER
+    <string name="titleFormServer">Agregar servidor</string>
+    <string name="titleListServer">Listado de servidor(es)</string>
+    <string name="nameServer">NOMBRE</string>
+    <string name="urlServer">URL SERVIDOR</string>
+
+    //UPLOAD FILE
+    <string name="titleUploadFiles">Subir imágenes</string>
+    <string name="localPath">Ruta local: </string>
+    <string name="serverUpload">Servidor: </string>
+    <string name="countImage">Subida/Restante: </string>
+    <string name="testUpload">TEST CARGA</string>
+
+    //TEST UPLOAD FILE
+    <string name="titleTestUploadFiles">Prueba de carga de imagenes</string>
+    <string name="dateStart">Fecha inicio: </string>
+    <string name="dateEnd">Fecha termino: </string>
+    <string name="timer">Tiempo: </string>
+
+</resources>

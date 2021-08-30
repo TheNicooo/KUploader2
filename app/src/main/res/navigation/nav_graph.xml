@@ -27,6 +27,15 @@
         android:id="@+id/uploadFileFragment"
         android:name="com.kauel.kuploader2.ui.uploadFile.UploadFileFragment"
         android:label="Subir imágenes"
-        tools:layout="@layout/fragment_upload_file"/>
+        tools:layout="@layout/fragment_upload_file">
+        <action
+            android:id="@+id/action_uploadFileFragment_to_uploadTestFileFragment"
+            app:destination="@id/uploadTestFileFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/uploadTestFileFragment"
+        android:name="com.kauel.kuploader2.ui.testUploadFile.TestUploadFileFragment"
+        android:label="Test carga imágenes"
+        tools:layout="@layout/fragment_test_upload_file"/>
 
 </navigation>
