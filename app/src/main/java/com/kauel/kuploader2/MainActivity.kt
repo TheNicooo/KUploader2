@@ -37,6 +37,9 @@ class MainActivity : AppCompatActivity() {
             requestPermissionLauncher.launch(
                 Manifest.permission.WRITE_EXTERNAL_STORAGE
             )
+            requestPermissionLauncher.launch(
+                Manifest.permission.MANAGE_EXTERNAL_STORAGE
+            )
         }
 
         val navHostFragment =

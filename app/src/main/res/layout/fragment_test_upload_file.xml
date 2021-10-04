@@ -6,53 +6,61 @@
     android:layout_height="match_parent">
 
     <LinearLayout
-        android:layout_width="300dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@drawable/blue_border_rounded_cornwe"
-        android:orientation="vertical"
-        android:padding="15dp"
+        android:orientation="horizontal"
+        android:padding="25dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <TextView
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="300dp"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginVertical="20dp"
-            android:text="@string/titleTestUploadFiles"
-            android:textColor="@color/orangeKauel"
-            android:textSize="18sp"
-            android:textStyle="bold" />
+            android:orientation="vertical"
+            android:layout_marginRight="20dp">
 
-        <TextView
-            android:id="@+id/edtNameServerTesting"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:textColor="@color/orangeKauel"
-            android:textSize="13sp"
-            android:textStyle="bold"
-            tools:text="TESTING" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginVertical="20dp"
+                android:text="@string/titleTestUploadFiles"
+                android:textColor="@color/orangeKauel"
+                android:textSize="18sp"
+                android:textStyle="bold" />
 
-        <ImageView
-            android:id="@+id/imgUpload"
-            android:layout_width="150dp"
-            android:layout_height="150dp"
-            android:layout_gravity="center"
-            android:src="@drawable/cloud_upload" />
+            <TextView
+                android:id="@+id/edtNameServerTesting"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:textColor="@color/orangeKauel"
+                android:textSize="13sp"
+                android:textStyle="bold"
+                tools:text="TESTING" />
 
-        <ProgressBar
-            android:id="@+id/pbLoadingUpload"
-            style="?android:attr/progressBarStyleHorizontal"
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:max="11"
-            android:progressTint="@color/blue"/>
+            <ImageView
+                android:id="@+id/imgUpload"
+                android:layout_width="150dp"
+                android:layout_height="150dp"
+                android:layout_gravity="center"
+                android:src="@drawable/cloud_upload" />
+
+            <ProgressBar
+                android:id="@+id/pbLoadingUpload"
+                style="?android:attr/progressBarStyleHorizontal"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:max="11"
+                android:progressTint="@color/blue" />
+
+        </LinearLayout>
 
         <LinearLayout
-            android:layout_width="match_parent"
+            android:layout_width="300dp"
             android:layout_height="wrap_content"
             android:orientation="vertical">
 

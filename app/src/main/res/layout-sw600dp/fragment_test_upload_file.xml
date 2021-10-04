@@ -6,77 +6,53 @@
     android:layout_height="match_parent">
 
     <LinearLayout
-        android:layout_width="wrap_content"
+        android:layout_width="300dp"
         android:layout_height="wrap_content"
         android:background="@drawable/blue_border_rounded_cornwe"
-        android:orientation="horizontal"
-        android:padding="25dp"
+        android:orientation="vertical"
+        android:padding="15dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <LinearLayout
-            android:layout_width="300dp"
+        <TextView
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:layout_gravity="center"
+            android:layout_marginVertical="20dp"
+            android:text="@string/titleTestUploadFiles"
+            android:textColor="@color/orangeKauel"
+            android:textSize="18sp"
+            android:textStyle="bold" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginVertical="20dp"
-                android:text="@string/titleUploadFiles"
-                android:textColor="@color/orangeKauel"
-                android:textSize="18sp"
-                android:textStyle="bold" />
+        <TextView
+            android:id="@+id/edtNameServerTesting"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:textColor="@color/orangeKauel"
+            android:textSize="13sp"
+            android:textStyle="bold"
+            tools:text="TESTING" />
 
-            <ImageView
-                android:id="@+id/imgUpload"
-                android:layout_width="150dp"
-                android:layout_height="150dp"
-                android:layout_gravity="center"
-                android:src="@drawable/cloud_upload" />
+        <ImageView
+            android:id="@+id/imgUpload"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:layout_gravity="center"
+            android:src="@drawable/cloud_upload" />
 
-            <TextView
-                android:id="@+id/tvNameImage"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:ellipsize="end"
-                android:maxLines="1"
-                android:padding="5dp"
-                android:textSize="12sp"
-                tools:text="asdasdasdasdasdasdasdasdasdasdasdasdasdsadasdasdasdasdasdaasdasd" />
-
-            <LinearLayout
-                android:id="@+id/lyProgressUpload"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-                <ProgressBar
-                    android:id="@+id/pbLoadingUpload"
-                    style="?android:attr/progressBarStyleHorizontal"
-                    android:layout_width="200dp"
-                    android:layout_height="50dp"
-                    android:layout_marginLeft="15dp"
-                    android:layout_marginRight="10dp"
-                    android:indeterminate="true"
-                    android:indeterminateTint="@color/blue" />
-
-                <ImageView
-                    android:id="@+id/imgStop"
-                    android:layout_width="35dp"
-                    android:layout_height="35dp"
-                    android:layout_gravity="center"
-                    android:src="@drawable/cancel" />
-
-            </LinearLayout>
-
-        </LinearLayout>
+        <ProgressBar
+            android:id="@+id/pbLoadingUpload"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:max="11"
+            android:progressTint="@color/blue"/>
 
         <LinearLayout
-            android:layout_width="300dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
@@ -108,59 +84,89 @@
             </RelativeLayout>
 
             <RelativeLayout
-                android:id="@+id/rlCountImage"
+                android:id="@+id/rlDateStart"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
                 android:background="@drawable/blue_border_rounded_cornwe">
 
                 <TextView
-                    android:id="@+id/edtCountImage"
+                    android:id="@+id/edtDateStart"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_toRightOf="@+id/countImageIcon"
+                    android:layout_toRightOf="@+id/dateStartIcon"
                     android:background="@android:color/transparent"
                     android:ellipsize="end"
                     android:padding="10dp"
                     android:textCursorDrawable="@drawable/cursor_color"
                     android:textSize="12sp"
-                    tools:text="@string/countImage" />
+                    tools:text="@string/dateStart" />
 
                 <ImageView
-                    android:id="@+id/countImageIcon"
+                    android:id="@+id/dateStartIcon"
                     android:layout_width="20.7dp"
                     android:layout_height="20.3dp"
                     android:layout_centerVertical="true"
                     android:layout_marginLeft="12dp"
-                    android:src="@drawable/art_track" />
+                    android:src="@drawable/date_range" />
 
             </RelativeLayout>
 
             <RelativeLayout
+                android:id="@+id/rlDateEnd"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
                 android:background="@drawable/blue_border_rounded_cornwe">
 
                 <TextView
-                    android:id="@+id/edtNameServer"
+                    android:id="@+id/edtDateEnd"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_toRightOf="@+id/personIcon"
+                    android:layout_toRightOf="@+id/dateEndIcon"
                     android:background="@android:color/transparent"
                     android:ellipsize="end"
                     android:padding="10dp"
                     android:textCursorDrawable="@drawable/cursor_color"
                     android:textSize="12sp"
-                    tools:text="@string/serverUpload" />
+                    tools:text="@string/dateEnd" />
 
                 <ImageView
-                    android:id="@+id/personIcon"
+                    android:id="@+id/dateEndIcon"
                     android:layout_width="20.7dp"
                     android:layout_height="20.3dp"
                     android:layout_centerVertical="true"
                     android:layout_marginLeft="12dp"
-                    android:src="@drawable/person" />
+                    android:src="@drawable/date_range" />
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/rlTime"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/blue_border_rounded_cornwe">
+
+                <TextView
+                    android:id="@+id/edtTimer"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_toRightOf="@+id/timerIcon"
+                    android:background="@android:color/transparent"
+                    android:ellipsize="end"
+                    android:padding="10dp"
+                    android:textCursorDrawable="@drawable/cursor_color"
+                    android:textSize="12sp"
+                    tools:text="@string/timer" />
+
+                <ImageView
+                    android:id="@+id/timerIcon"
+                    android:layout_width="20.7dp"
+                    android:layout_height="20.3dp"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="12dp"
+                    android:src="@drawable/timer" />
 
             </RelativeLayout>
 
@@ -173,30 +179,8 @@
                 android:text="@string/chooseFile"
                 android:textColor="@color/white" />
 
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:layout_marginLeft="50dp">
-
-                <ImageView
-                    android:id="@+id/imgTestUpload"
-                    android:layout_width="80dp"
-                    android:layout_height="80dp"
-                    android:layout_gravity="center"
-                    android:src="@drawable/speed_blue" />
-
-                <TextView
-                    style="@style/CardView"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/testUpload"
-                    android:textColor="@color/blue"
-                    android:textStyle="bold" />
-
-            </LinearLayout>
-
         </LinearLayout>
 
     </LinearLayout>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

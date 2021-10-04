@@ -7,116 +7,132 @@
     tools:context=".ui.formServer.FormServer">
 
     <LinearLayout
-        android:layout_width="300dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@drawable/blue_border_rounded_cornwe"
-        android:orientation="vertical"
+        android:orientation="horizontal"
         android:padding="15dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginVertical="20dp"
-            android:text="@string/titleFormServer"
-            android:textColor="@color/orangeKauel"
-            android:textSize="18sp"
-            android:textStyle="bold" />
-
         <LinearLayout
-            android:layout_width="match_parent"
+            android:layout_width="300dp"
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <RelativeLayout
+            <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@drawable/blue_border_rounded_cornwe">
+                android:layout_gravity="center"
+                android:layout_marginVertical="20dp"
+                android:text="@string/titleFormServer"
+                android:textColor="@color/orangeKauel"
+                android:textSize="18sp"
+                android:textStyle="bold" />
 
-                <EditText
-                    android:id="@+id/edtName"
+            <LinearLayout
+                android:id="@+id/lyFormServer"
+                android:layout_width="300dp"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <RelativeLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/blue_border_rounded_cornwe">
+
+                    <EditText
+                        android:id="@+id/edtName"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_toRightOf="@+id/nameIcon"
+                        android:background="@android:color/transparent"
+                        android:hint="@string/nameServer"
+                        android:inputType="text"
+                        android:maxLines="1"
+                        android:padding="10dp"
+                        android:textCursorDrawable="@drawable/cursor_color"
+                        android:textSize="12sp" />
+
+                    <ImageView
+                        android:id="@+id/nameIcon"
+                        android:layout_width="20.7dp"
+                        android:layout_height="20.3dp"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="12dp"
+                        android:src="@drawable/person" />
+
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:background="@drawable/blue_border_rounded_cornwe">
+
+                    <EditText
+                        android:id="@+id/edtUrl"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_toRightOf="@+id/urlIcon"
+                        android:background="@android:color/transparent"
+                        android:ellipsize="end"
+                        android:ems="10"
+                        android:hint="@string/urlServer"
+                        android:inputType="text"
+                        android:maxLines="1"
+                        android:padding="10dp"
+                        android:textCursorDrawable="@drawable/cursor_color"
+                        android:textSize="12sp" />
+
+                    <ImageView
+                        android:id="@+id/urlIcon"
+                        android:layout_width="20.7dp"
+                        android:layout_height="20.3dp"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="12dp"
+                        android:src="@drawable/link" />
+
+                </RelativeLayout>
+
+                <Button
+                    android:id="@+id/btnSaveServer"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_toRightOf="@+id/nameIcon"
-                    android:background="@android:color/transparent"
-                    android:hint="@string/nameServer"
-                    android:inputType="text"
-                    android:maxLines="1"
-                    android:padding="10dp"
-                    android:textCursorDrawable="@drawable/cursor_color"
-                    android:textSize="12sp" />
+                    android:layout_marginTop="10dp"
+                    android:background="@drawable/blue_fill__rounded_color"
+                    android:text="@string/save"
+                    android:textColor="@color/white" />
 
-                <ImageView
-                    android:id="@+id/nameIcon"
-                    android:layout_width="20.7dp"
-                    android:layout_height="20.3dp"
-                    android:layout_centerVertical="true"
-                    android:layout_marginLeft="12dp"
-                    android:src="@drawable/person" />
-
-            </RelativeLayout>
-
-            <RelativeLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:background="@drawable/blue_border_rounded_cornwe">
-
-                <EditText
-                    android:id="@+id/edtUrl"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_toRightOf="@+id/urlIcon"
-                    android:background="@android:color/transparent"
-                    android:ems="10"
-                    android:hint="@string/urlServer"
-                    android:ellipsize="end"
-                    android:inputType="text"
-                    android:maxLines="1"
-                    android:padding="10dp"
-                    android:textCursorDrawable="@drawable/cursor_color"
-                    android:textSize="12sp" />
-
-                <ImageView
-                    android:id="@+id/urlIcon"
-                    android:layout_width="20.7dp"
-                    android:layout_height="20.3dp"
-                    android:layout_centerVertical="true"
-                    android:layout_marginLeft="12dp"
-                    android:src="@drawable/link" />
-
-            </RelativeLayout>
-
-            <Button
-                android:id="@+id/btnSaveServer"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:background="@drawable/blue_fill__rounded_color"
-                android:text="@string/save"
-                android:textColor="@color/white" />
+            </LinearLayout>
 
         </LinearLayout>
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginVertical="20dp"
-            android:text="@string/titleListServer"
-            android:textColor="@color/orangeKauel"
-            android:textSize="18sp"
-            android:textStyle="bold" />
+        <LinearLayout
+            android:layout_width="300dp"
+            android:layout_height="200dp"
+            android:orientation="vertical"
+            android:paddingLeft="20dp">
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rvListServer"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            tools:listitem="@layout/item_list_server"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginVertical="20dp"
+                android:text="@string/titleListServer"
+                android:textColor="@color/orangeKauel"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rvListServer"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:listitem="@layout/item_list_server" />
+
+        </LinearLayout>
 
     </LinearLayout>
 

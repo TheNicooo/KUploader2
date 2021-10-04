@@ -8,75 +8,94 @@
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="50dp"
+        android:layout_marginRight="100dp"
+        android:orientation="vertical"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:id="@+id/imgTestUpload"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_gravity="center"
+            android:src="@drawable/speed" />
+
+        <TextView
+            style="@style/CardView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/testUpload"
+            android:textColor="@color/white"
+            android:textStyle="bold" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
         android:background="@drawable/blue_border_rounded_cornwe"
-        android:orientation="horizontal"
-        android:padding="25dp"
+        android:orientation="vertical"
+        android:padding="15dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <LinearLayout
-            android:layout_width="300dp"
+        <TextView
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:layout_gravity="center"
+            android:layout_marginVertical="20dp"
+            android:text="@string/titleUploadFiles"
+            android:textColor="@color/orangeKauel"
+            android:textSize="18sp"
+            android:textStyle="bold" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginVertical="20dp"
-                android:text="@string/titleUploadFiles"
-                android:textColor="@color/orangeKauel"
-                android:textSize="18sp"
-                android:textStyle="bold" />
+        <ImageView
+            android:id="@+id/imgUpload"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:layout_gravity="center"
+            android:src="@drawable/cloud_upload" />
+
+        <TextView
+            android:id="@+id/tvNameImage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:padding="10dp"
+            android:textSize="12sp"
+            tools:text="asdasdasdasdasdasdasdasdasdasdasdasdasdsadasdasdasdasdasdaasdasd" />
+
+        <LinearLayout
+            android:id="@+id/lyProgressUpload"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <ProgressBar
+                android:id="@+id/pbLoadingUpload"
+                style="?android:attr/progressBarStyleHorizontal"
+                android:layout_width="200dp"
+                android:layout_height="50dp"
+                android:layout_marginLeft="15dp"
+                android:layout_marginRight="10dp"
+                android:indeterminate="true"
+                android:indeterminateTint="@color/blue" />
 
             <ImageView
-                android:id="@+id/imgUpload"
-                android:layout_width="150dp"
-                android:layout_height="150dp"
+                android:id="@+id/imgStop"
+                android:layout_width="35dp"
+                android:layout_height="35dp"
                 android:layout_gravity="center"
-                android:src="@drawable/cloud_upload" />
-
-            <TextView
-                android:id="@+id/tvNameImage"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:ellipsize="end"
-                android:maxLines="1"
-                android:padding="5dp"
-                android:textSize="12sp"
-                tools:text="asdasdasdasdasdasdasdasdasdasdasdasdasdsadasdasdasdasdasdaasdasd" />
-
-            <LinearLayout
-                android:id="@+id/lyProgressUpload"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-                <ProgressBar
-                    android:id="@+id/pbLoadingUpload"
-                    style="?android:attr/progressBarStyleHorizontal"
-                    android:layout_width="200dp"
-                    android:layout_height="50dp"
-                    android:layout_marginLeft="15dp"
-                    android:layout_marginRight="10dp"
-                    android:indeterminate="true"
-                    android:indeterminateTint="@color/blue" />
-
-                <ImageView
-                    android:id="@+id/imgStop"
-                    android:layout_width="35dp"
-                    android:layout_height="35dp"
-                    android:layout_gravity="center"
-                    android:src="@drawable/cancel" />
-
-            </LinearLayout>
+                android:src="@drawable/cancel" />
 
         </LinearLayout>
 
         <LinearLayout
-            android:layout_width="300dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
@@ -172,29 +191,6 @@
                 android:background="@drawable/blue_fill__rounded_color"
                 android:text="@string/chooseFile"
                 android:textColor="@color/white" />
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:layout_marginLeft="50dp">
-
-                <ImageView
-                    android:id="@+id/imgTestUpload"
-                    android:layout_width="80dp"
-                    android:layout_height="80dp"
-                    android:layout_gravity="center"
-                    android:src="@drawable/speed_blue" />
-
-                <TextView
-                    style="@style/CardView"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/testUpload"
-                    android:textColor="@color/blue"
-                    android:textStyle="bold" />
-
-            </LinearLayout>
 
         </LinearLayout>
 
