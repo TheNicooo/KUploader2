@@ -20,6 +20,8 @@ const val NOTIFICATION_CHANNEL_ID = "upload_channel"
 const val NOTIFICATION_CHANNEL_NAME = "upload_channel_name"
 const val NOTIFICATION_ID = 199
 
+const val TITLE_INTENT_FOLDER = "Select directory"
+const val CODE_INTENT_FOLDER = 111
 const val FOLDER_HISTORY = "Historial imágenes subidas"
 const val FOLDER_SUCCESS = "Success"
 const val FOLDER_ERROR = "Error"

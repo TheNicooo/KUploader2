@@ -41,8 +41,6 @@ class TestUploadFileFragment : Fragment(R.layout.fragment_test_upload_file) {
     private val viewModel: TestUploadFileViewModel by viewModels()
 
     //VARIABLES
-    private var filepath: File? = null
-    private var flagLoading: Boolean = false
     private var file: File? = null
     private var isUploading: Boolean = false
     private var url: String? = ""
@@ -75,7 +73,7 @@ class TestUploadFileFragment : Fragment(R.layout.fragment_test_upload_file) {
             btnChoosePath.setOnClickListener(View.OnClickListener {
                 val intent = Intent()
                     .setAction(Intent.ACTION_OPEN_DOCUMENT_TREE)
-                startActivityForResult(Intent.createChooser(intent, "Select a file"), 111)
+                startActivityForResult(Intent.createChooser(intent, TITLE_INTENT_FOLDER), CODE_INTENT_FOLDER)
             })
 
             imgUpload.setOnClickListener {
@@ -104,14 +102,7 @@ class TestUploadFileFragment : Fragment(R.layout.fragment_test_upload_file) {
         val sharedPref = activity?.getPreferences(Context.MODE_PRIVATE) ?: return
         val name = sharedPref.getString("NAME_SERVER", "")
         url = sharedPref.getString("URL", "")
-        //val path = sharedPref.getString("PATH_FILE", "")
-
         binding.edtNameServerTesting.text = "$name"
-//        if (path != "") {
-//            filepath = File(path)
-//            binding.edtPathFiles.text = "RUTA: $path"
-//            //startProcessUpload()
-//        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -119,14 +110,14 @@ class TestUploadFileFragment : Fragment(R.layout.fragment_test_upload_file) {
 
         if (requestCode == 111 && resultCode == Activity.RESULT_OK) {
             var gpath: String = Environment.getExternalStorageDirectory().absolutePath
-            filepath =
+            val filepath =
                 File((gpath + File.separator + data?.data?.path).replace("tree/primary:", ""))
 
             val path = filepath.toString()
             binding.edtPathFiles.text = "RUTA: $path"
 
-            if (filepath!!.isDirectory) {
-                getFile(filepath!!)
+            if (filepath.isDirectory) {
+                file = filepath.listFiles().first()
             } else {
                 Toast.makeText(
                     activity,
@@ -138,62 +129,29 @@ class TestUploadFileFragment : Fragment(R.layout.fragment_test_upload_file) {
     }
 
     private fun initObservers() {
-        var positionImage = 0
         viewModel.testUploadLiveData.observeForever { result ->
             when (result) {
                 is Resource.Error -> {
-                    if (flagLoading) {
-                        activity?.makeToast(result.error.toString())
-                        flagLoading = false
-                        uploadFileToServer(file!!)
-                    }
+                    val error = result.error.toString()
+                    appendLog("TestUploadFileFragment initObservers-Error $error")
+                    activity?.makeToast(NOTIFICATION_ERROR)
                 }
                 is Resource.Loading -> {
-                    flagLoading = true
-                    positionImage++
-                    showProgressUpload(true, positionImage)
-                    //activity?.makeToast(positionImage.toString())
-                }
-                is Resource.Success -> {
-                    if (flagLoading) {
-                        flagLoading = false
-                        if (positionImage <= 10) {
-                            uploadFileToServer(file!!)
-                        } else {
-                            positionImage = 0
-                            showProgressUpload(false)
-                            showDateEnd()
-                        }
+                    result?.data?.let {
+                        showProgressUpload(true, it.size)
                     }
                 }
-            }
-        }
-    }
-
-    private fun getFile(path: File) {
-        path.walk().forEach {
-            if (it.extension == "jpg" || it.extension == "jpeg") {
-                file = it
-                returnTransition
+                is Resource.Success -> {
+                    showProgressUpload(false)
+                    showDateEnd()
+                }
             }
         }
     }
 
     private fun uploadFileToServer(file: File) {
         val url = url + URL_TEST_FILE
-
-        val requestFile: RequestBody =
-            RequestBody.create(
-                MediaType.parse("multipart/form-data"),
-                file
-            )
-        val image =
-            MultipartBody.Part.createFormData(
-                "file",
-                file.name,
-                requestFile
-            )
-        viewModel.uploadTestFile(url, image)
+        viewModel.uploadTestFile(url, file)
     }
 
     private fun showProgressUpload(status: Boolean, progress: Int = 0) {

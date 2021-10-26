@@ -1,7 +1,6 @@
 package com.kauel.kuploader2.ui.uploadFile
 
 import android.annotation.SuppressLint
-import android.app.Activity
 import android.app.Activity.RESULT_OK
 import android.app.NotificationChannel
 import android.app.NotificationManager
@@ -9,35 +8,29 @@ import android.app.PendingIntent
 import android.content.ContentResolver
 import android.content.Context
 import android.content.Intent
-import android.database.Cursor
 import android.media.ExifInterface
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.Environment
-import android.provider.MediaStore
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.activity.result.ActivityResult
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat.IMPORTANCE_LOW
-import androidx.core.net.toUri
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.kauel.kuploader2.MainActivity
 import com.kauel.kuploader2.R
 import com.kauel.kuploader2.databinding.FragmentUploadFileBinding
 import com.kauel.kuploader2.utils.*
 import dagger.hilt.android.AndroidEntryPoint
-import okhttp3.MediaType
-import okhttp3.MultipartBody
-import okhttp3.RequestBody
+import kotlinx.coroutines.launch
 import java.io.BufferedWriter
 import java.io.File
 import java.io.FileWriter
@@ -47,7 +40,6 @@ import java.util.*
 import java.util.function.Consumer
 import java.util.stream.Collectors
 import kotlin.collections.ArrayList
-import kotlin.system.exitProcess
 
 
 @AndroidEntryPoint
@@ -62,12 +54,12 @@ class UploadFileFragment : Fragment(R.layout.fragment_upload_file) {
     private var list: List<String> = ArrayList()
     private var token: String? = ""
     private var url: String? = ""
-    private var flagLoading: Boolean = false
     private var flagStop: Boolean = false
-    private var flagError: Boolean = true
     private var isUploading: Boolean = false
     private var filepath: File? = null
     private var mBuilder: NotificationCompat.Builder? = null
+    private var total = 0
+    private var currentUpload = 0
 
     private lateinit var notificationManager: NotificationManager
 
@@ -99,8 +91,7 @@ class UploadFileFragment : Fragment(R.layout.fragment_upload_file) {
             btnChoosePath.setOnClickListener(View.OnClickListener {
                 val intent = Intent()
                     .setAction(Intent.ACTION_OPEN_DOCUMENT_TREE)
-                startActivityForResult(Intent.createChooser(intent, "Select a file"), 111)
-                //openDocument()
+                startActivityForResult(Intent.createChooser(intent, TITLE_INTENT_FOLDER), CODE_INTENT_FOLDER)
             })
 
             imgUpload.setOnClickListener {
@@ -108,15 +99,18 @@ class UploadFileFragment : Fragment(R.layout.fragment_upload_file) {
                     flagStop = false
                     if (!isUploading) {
                         if (filepath != null) {
-                            startProcessUpload()
-                        }
-                        if (listFile.size > 0) {
-                            isUploading = true
-                            uploadFileToServer(listFile.first())
-                            //sendCommandToService(ACTION_START_SERVICE)
-                        } else {
-                            activity?.makeToast(EMPTY_PATH)
-                            //sendCommandToService(ACTION_STOP_SERVICE)
+                            listFiles(filepath!!)
+                            binding.imgUpload.setImageDrawable(resources.getDrawable(R.drawable.cloud_upload))
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                                createNotificationChannel()
+                            }
+                            if (listFile.size > 0) {
+                                isUploading = true
+                                total += listFile.size
+                                uploadFileToServer()
+                            } else {
+                                activity?.makeToast(EMPTY_PATH)
+                            }
                         }
                     } else {
                         activity?.makeToast(UPLOAD_START)
@@ -140,82 +134,6 @@ class UploadFileFragment : Fragment(R.layout.fragment_upload_file) {
         }
     }
 
-    private fun openDocument() {
-        Intent().setAction(Intent.ACTION_OPEN_DOCUMENT).also {
-            it.type = "image/*|application/pdf"
-            val mimeTypes = arrayOf("image/jpg", "image/jpeg", "image/png", "application/pdf")
-            it.putExtra(Intent.EXTRA_MIME_TYPES, mimeTypes)
-            startForResultOpenDocument.launch(Intent.createChooser(it, "Seleccione un archivo"))
-        }
-    }
-
-    private val startForResultOpenDocument =
-        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
-            if (result.resultCode == Activity.RESULT_OK) {
-
-                val uri = result.data?.data?.normalizeScheme()
-                var gpath: String =
-                    Environment.getExternalStorageDirectory().absolutePath//Environment.getExternalStorageDirectory().absolutePath
-
-                //val file = File(gpath)
-
-                var path = ""//uri?.split(":")
-
-//                path = if (uri!!.contains("primary")) {
-//                    uri.replace("tree/primary:", "")
-//                } else {
-//                    val split = uri.split(":")
-//                    "mnt/extSdCard/" + split[1]
-//                }
-
-                val file = File(uri.toString())
-
-                if (file.exists()) {
-                    activity?.makeToast("Yes")
-                } else {
-                    activity?.makeToast("No")
-                }
-
-                if (file.isDirectory) {
-                    activity?.makeToast("Directory")
-                } else {
-                    activity?.makeToast("Not directory")
-                }
-
-//var path = ""//uri?.split(":")
-
-//                path = if (uri!!.contains("primary")) {
-//                    uri.replace("tree/primary:", "")
-//                } else {
-//                    val split = uri.split(":")
-//                    split[1]
-//                }
-//
-//                //.replace("tree/3234-3831:", "")
-//                uri.let {
-//                    // AQUÍ VÁ LO QUE DESEAS HACER CON EL ARCHIVO
-//                    filepath =
-//                        File((gpath + File.separator + path))
-//
-//                    val path = filepath.toString()
-//                    saveData()
-//                    binding.edtPathFiles.text = "RUTA: $path"
-//
-//                    if (filepath!!.isDirectory) {
-//                        //startProcessUpload()
-//                        //createFolder(File(gpath + File.separator))
-//                        listFiles(filepath!!)
-//                    } else
-//                        Toast.makeText(
-//                            activity,
-//                            ERROR_PATH,
-//                            Toast.LENGTH_SHORT
-//                        ).show()
-//
-//                }
-            }
-        }
-
     private fun init() {
         val sharedPref = activity?.getPreferences(Context.MODE_PRIVATE) ?: return
         val name = sharedPref.getString("NAME_SERVER", "")
@@ -227,10 +145,8 @@ class UploadFileFragment : Fragment(R.layout.fragment_upload_file) {
         if (path != "") {
             filepath = File(path)
             binding.edtPathFiles.text = "RUTA: $path"
-            //startProcessUpload()
         }
     }
-
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
@@ -238,13 +154,6 @@ class UploadFileFragment : Fragment(R.layout.fragment_upload_file) {
         if (requestCode == 111 && resultCode == RESULT_OK) {
             var gpath: String = Environment.getExternalStorageDirectory().absolutePath
 
-            //3234-3831:
-
-//            gpath = if (Build.VERSION.SDK_INT < Build.VERSION_CODES.R) {
-//                Environment.getExternalStorageDirectory().absolutePath
-//            } else {
-//                Environment.getExternalStoragePublicDirectory("").absolutePath
-//            }
             filepath =
                 File((gpath + File.separator + data?.data?.path).replace("tree/primary:", ""))
 
@@ -253,7 +162,6 @@ class UploadFileFragment : Fragment(R.layout.fragment_upload_file) {
             binding.edtPathFiles.text = "RUTA: $path"
 
             if (filepath!!.isDirectory) {
-                //startProcessUpload()
                 createFolder()
             } else
                 Toast.makeText(
@@ -264,9 +172,90 @@ class UploadFileFragment : Fragment(R.layout.fragment_upload_file) {
         }
     }
 
-    private fun startProcessUpload() {
+    /**
+     *
+     * */
+    private fun upload() {
         listFiles(filepath!!)
-        binding.imgUpload.setImageDrawable(resources.getDrawable(R.drawable.cloud_upload))
+        if (listFile.size > 0) {
+            isUploading = true
+            total += listFile.size
+            uploadFileToServer()
+        } else {
+            total = 0
+            currentUpload = 0
+            showProgressUpload(false)
+            showCountImage(false)
+            showNotificationEnd(3)
+            binding.imgUpload.setImageDrawable(resources.getDrawable(R.drawable.cloud_done))
+        }
+    }
+
+    /**
+     * Upload file to server
+     * */
+    private fun uploadFileToServer() {
+        val url = url + URL_FILE
+        val token = "Bearer $token"
+
+        viewModel.uploadFile(url, token, listFile)
+    }
+
+    private fun initObservers() {
+        var position = 0
+
+        viewModel.uploadLiveData.observeForever { result ->
+            when (result) {
+                is Resource.Error -> {
+                    val error = result.error.toString()
+                    appendLog("UploadFileFragment initObservers-Error $error")
+//                    if (flagLoading) {
+//                        flagLoading = false
+//                        flagError = if (flagError) {
+//                            //uploadFileToServer(listFile.first())
+//                            false
+//                        } else {
+//                            moveFile(listFile.first(), false)
+//                            listFiles(filepath!!)
+//                            //uploadFileToServer(listFile.first())
+//                            upload()
+//                            true
+//                        }
+//                    }
+                }
+                is Resource.Loading -> {
+                    result?.data?.let {
+                        lifecycleScope.launch {
+                            var current: Int = if (currentUpload == 0) {
+                                it.size
+                            } else {
+                                currentUpload + it.size
+                            }
+                            binding.tvNameImage.text = it.last().file.name
+                            showProgressUpload(true, current, total)
+                            showCountImage(true, current, total)
+                        }
+                    }
+                }
+                is Resource.Success -> {
+
+                    val response = result.data
+                    response?.map {
+                        moveFile(it.file, it.fileStatus)
+                    }
+                    if (response != null) {
+                        currentUpload = response.size
+                    }
+
+                    if (flagStop) {
+                        showProgressUpload(false)
+                        showNotificationEnd(2)
+                    } else {
+                        upload()
+                    }
+                }
+            }
+        }
     }
 
     private fun saveData() {
@@ -278,11 +267,6 @@ class UploadFileFragment : Fragment(R.layout.fragment_upload_file) {
     }
 
     private fun listFiles(path: File) {
-//        path.walk().forEach {
-//            if (it.extension == "jpg" || it.extension == "jpeg") {
-//                listFile.add(it)
-//            }
-//        }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             list = getStringFileList(path.toString(), ".jpg")
         }
@@ -292,12 +276,6 @@ class UploadFileFragment : Fragment(R.layout.fragment_upload_file) {
         }
 
     }
-
-//    private fun listFileString() {
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-//            list = getStringFileList(filepath.toString(), ".jpg")
-//        }
-//    }
 
     @RequiresApi(Build.VERSION_CODES.N)
     private fun getStringFileList(path: String, fileNameFilterPattern: String): List<String> {
@@ -346,88 +324,6 @@ class UploadFileFragment : Fragment(R.layout.fragment_upload_file) {
         }
         listFilesForFolder.sort()
         return listFilesForFolder
-    }
-
-    private fun initObservers() {
-        var position = 0
-
-        viewModel.uploadLiveData.observeForever { result ->
-            when (result) {
-                is Resource.Error -> {
-                    val error = result.error.toString()
-                    appendLog("UploadFileFragment initObservers-Error $error")
-                    if (flagLoading) {
-                        flagLoading = false
-                        if (flagError) {
-                            uploadFileToServer(listFile.first())
-                            flagError = false
-                        } else {
-                            moveFile(listFile.first(), false)
-                            listFiles(filepath!!)
-                            uploadFileToServer(listFile.first())
-                            flagError = true
-                        }
-                    }
-                }
-                is Resource.Loading -> {
-                    position++
-                    showProgressUpload(true, position, (listFile.size - 1))
-                    showCountImage(true, position, (listFile.size - 1))
-                    flagLoading = true
-                }
-                is Resource.Success -> {
-                    if (listFile.isNotEmpty()) {
-                        if (flagLoading) {
-                            if (result.data!!.status) {
-                                moveFile(listFile.first(), true)
-                            } else {
-                                moveFile(listFile.first(), false)
-                            }
-                            listFiles(filepath!!)
-                            if (listFile.size > 0) {
-                                if (flagStop) {
-                                    showProgressUpload(false)
-                                    showNotificationEnd(2)
-                                    flagLoading = false
-                                } else {
-                                    flagLoading = false
-                                    uploadFileToServer(listFile.first())
-                                }
-                            } else {
-                                flagLoading = false
-                                showProgressUpload(false)
-                                showCountImage(false)
-                                showNotificationEnd(3)
-                                binding.imgUpload.setImageDrawable(resources.getDrawable(R.drawable.cloud_done))
-                                position = 0
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    private fun uploadFileToServer(file: File) {
-        val url = url + URL_FILE
-        val token = "Bearer $token"
-        binding.tvNameImage.text = file.name
-
-//        val fileTemp = getFileFromUri(requireActivity().contentResolver, file.toUri(), requireActivity().cacheDir)
-//        copyExif(file.absolutePath, fileTemp.absolutePath)
-
-        val requestFile: RequestBody =
-            RequestBody.create(
-                MediaType.parse("multipart/form-data"),
-                file
-            )
-        val image =
-            MultipartBody.Part.createFormData(
-                "file",
-                file.name,
-                requestFile
-            )
-        viewModel.uploadFile(url, token, image)
     }
 
     private fun getFileFromUri(contentResolver: ContentResolver, uri: Uri, directory: File): File {
@@ -483,10 +379,6 @@ class UploadFileFragment : Fragment(R.layout.fragment_upload_file) {
                 lyProgressUpload.visible()
                 tvNameImage.visible()
 
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    createNotificationChannel()
-                }
-
                 mBuilder!!.setContentText("Subidas/restantes: $numImage / $totalImage")
                 notificationManager.notify(NOTIFICATION_ID, mBuilder!!.build())
             }
@@ -538,7 +430,7 @@ class UploadFileFragment : Fragment(R.layout.fragment_upload_file) {
         }
     }
 
-    var absolutePath: String = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+    private var absolutePath: String = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
         Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM).absolutePath
     } else {
         Environment.getExternalStorageDirectory().absolutePath

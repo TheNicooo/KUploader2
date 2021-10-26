@@ -30,4 +30,13 @@ interface ApiService {
         @Url url: String,
         @Part image: MultipartBody.Part
     ): ResponseAPI
+
+    @Multipart
+    @POST()
+    suspend fun uploadThermalImage(
+        @Url url: String,
+        @Header("Authorization") token: String,
+        @Part image: MultipartBody.Part,
+        @Part thermalImage: MultipartBody.Part
+    ): ResponseAPI
 }

@@ -10,9 +10,8 @@ import com.kauel.kuploader2.utils.Converters
 
 @Database(
     entities = [Login::class,
-        Server::class,
-        ResponseAPI::class],
-    version = 1,
+        Server::class],
+    version = 2,
     exportSchema = false
 )
 @TypeConverters(Converters::class)
@@ -21,6 +20,4 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun loginDao(): LoginDao
 
     abstract fun serverDao(): ServerDao
-
-    abstract fun responseDao(): ResponseDao
 }
