@@ -4,6 +4,7 @@ const val URL_LOGIN = "login"
 const val URL_FILE = "processFile"
 const val URL_TEST_FILE = "uploadTest"
 const val URL_BASE = "https://alertaenap-testing.azurewebsites.net/api/"
+const val URL_API = "/api/"
 
 const val ERROR_404 = "HTTP 404 Not Found"
 const val ERROR_403 = "HTTP 403 Forbidden"
@@ -31,8 +32,11 @@ const val ERROR_PATH = "Error al seleccionar ruta!"
 
 const val UPLOAD_START = "Subida iniciada!"
 const val UPLOAD_STOP = "Subida detenida!"
+const val UPLOAD_ERROR = " / Imágenes subidas: "
 
 const val NOTIFICATION_ERROR = "Error al subir imagenes"
 const val NOTIFICATION_UPLOAD_FINISHED = "Subida terminada!"
 const val NOTIFICATION_TITLE = "Subida de imágenes"
 const val NOTIFICATION_UPLOAD_STOP = "Subida detenida!"
+
+const val VERSION_NAME = "Versión: "

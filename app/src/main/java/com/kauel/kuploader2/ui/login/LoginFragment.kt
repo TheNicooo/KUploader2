@@ -12,6 +12,7 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import com.kauel.kuploader2.BuildConfig
 import com.kauel.kuploader2.R
 import com.kauel.kuploader2.api.login.Login
 import com.kauel.kuploader2.api.server.Server
@@ -94,8 +95,14 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
                     nameServer = list[position]
                     Toast.makeText(activity, nameServer, Toast.LENGTH_SHORT).show()
                     repeat(listJson!!.size) {
-                        if (listJson!![it].name == nameServer)
-                            url = listJson!![it].url
+                        if (listJson!![it].name == nameServer) {
+                            val urlJson = listJson!![it].url
+                            url = if (urlJson.contains(URL_API)) {
+                                urlJson
+                            } else {
+                                urlJson + URL_API
+                            }
+                        }
                     }
                 }
 
@@ -126,10 +133,12 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
         val sharedPref = activity?.getPreferences(Context.MODE_PRIVATE) ?: return
         val email = sharedPref.getString("EMAIL", "")
         val password = sharedPref.getString("PASSWORD", "")
+        val versionName = BuildConfig.VERSION_NAME
         idSpinner = sharedPref.getInt("ID_SERVER", 0)
         binding.apply {
             edtEmail.setText(email)
             edtPassword.setText(password)
+            tvVersionName.text = "$VERSION_NAME $versionName"
         }
     }
 

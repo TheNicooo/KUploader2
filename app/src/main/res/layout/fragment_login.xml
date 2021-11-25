@@ -7,6 +7,16 @@
     tools:context=".ui.login.LoginActivity"
     android:background="@drawable/fondo">
 
+    <TextView
+        android:id="@+id/tvVersionName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:padding="20dp"
+        tools:text="Version 1.0.0"
+        android:textColor="@color/white"
+        tools:ignore="MissingConstraints" />
+
     <LinearLayout
         android:id="@+id/lyCardView"
         android:layout_width="300dp"

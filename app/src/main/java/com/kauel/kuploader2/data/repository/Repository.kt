@@ -66,8 +66,8 @@ class Repository @Inject constructor(
     ): Flow<Resource<List<ResponseFile>>> {
         return flow {
             emit(Resource.Loading<List<ResponseFile>>())
+            val listMutable = mutableListOf<ResponseFile>()
             try {
-                val listMutable = mutableListOf<ResponseFile>()
                 var response: ResponseAPI
 
                 val sizeList = listFile.size
@@ -107,7 +107,7 @@ class Repository @Inject constructor(
 
                 emit(Resource.Success<List<ResponseFile>>(listMutable))
             } catch (throwable: Throwable) {
-                emit(Resource.Error<List<ResponseFile>>(throwable))
+                emit(Resource.Error<List<ResponseFile>>(throwable, listMutable))
             }
         }.flowOn(Dispatchers.IO)
     }

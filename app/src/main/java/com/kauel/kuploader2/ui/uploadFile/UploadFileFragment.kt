@@ -6,6 +6,7 @@ import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.ContentResolver
+import android.content.ContentUris
 import android.content.Context
 import android.content.Intent
 import android.media.ExifInterface
@@ -13,6 +14,7 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.Environment
+import android.provider.MediaStore
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -21,6 +23,7 @@ import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat.IMPORTANCE_LOW
+import androidx.core.database.getDoubleOrNull
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
@@ -107,6 +110,8 @@ class UploadFileFragment : Fragment(R.layout.fragment_upload_file) {
                             if (listFile.size > 0) {
                                 isUploading = true
                                 total += listFile.size
+                                pbLoadingUpload.visible()
+                                lyProgressUpload.visible()
                                 uploadFileToServer()
                             } else {
                                 activity?.makeToast(EMPTY_PATH)
@@ -125,7 +130,6 @@ class UploadFileFragment : Fragment(R.layout.fragment_upload_file) {
             imgStop.setOnClickListener {
                 flagStop = true
                 activity?.makeToast(UPLOAD_STOP)
-                //sendCommandToService(ACTION_STOP_SERVICE)
             }
 
             imgTestUpload.setOnClickListener {
@@ -176,18 +180,25 @@ class UploadFileFragment : Fragment(R.layout.fragment_upload_file) {
      *
      * */
     private fun upload() {
-        listFiles(filepath!!)
-        if (listFile.size > 0) {
-            isUploading = true
-            total += listFile.size
-            uploadFileToServer()
-        } else {
-            total = 0
-            currentUpload = 0
-            showProgressUpload(false)
-            showCountImage(false)
-            showNotificationEnd(3)
-            binding.imgUpload.setImageDrawable(resources.getDrawable(R.drawable.cloud_done))
+        try {
+            listFiles(filepath!!)
+            if (listFile.size > 0) {
+                isUploading = true
+                total += listFile.size
+                uploadFileToServer()
+            } else {
+                total = 0
+                currentUpload = 0
+                showProgressUpload(false)
+                showCountImage(false)
+                showNotificationEnd(3)
+                binding.imgUpload.setImageDrawable(resources.getDrawable(R.drawable.cloud_done))
+            }
+        }
+        catch (ex: java.lang.Exception) {
+            val error = ex.message
+            appendLog("UploadFileFragment upload $error")
+            activity?.makeToast(error!!)
         }
     }
 
@@ -202,26 +213,24 @@ class UploadFileFragment : Fragment(R.layout.fragment_upload_file) {
     }
 
     private fun initObservers() {
-        var position = 0
 
         viewModel.uploadLiveData.observeForever { result ->
             when (result) {
                 is Resource.Error -> {
                     val error = result.error.toString()
                     appendLog("UploadFileFragment initObservers-Error $error")
-//                    if (flagLoading) {
-//                        flagLoading = false
-//                        flagError = if (flagError) {
-//                            //uploadFileToServer(listFile.first())
-//                            false
-//                        } else {
-//                            moveFile(listFile.first(), false)
-//                            listFiles(filepath!!)
-//                            //uploadFileToServer(listFile.first())
-//                            upload()
-//                            true
-//                        }
-//                    }
+
+                    val response = result.data
+                    response?.map {
+                        moveFile(it.file, it.fileStatus)
+                    }
+                    val size = response?.size
+
+                    showProgressUpload(false)
+                    showCountImage(false)
+                    showNotificationEnd(1)
+                    total = 0
+                    activity?.makeToast("$error $UPLOAD_ERROR $size")
                 }
                 is Resource.Loading -> {
                     result?.data?.let {
@@ -244,11 +253,12 @@ class UploadFileFragment : Fragment(R.layout.fragment_upload_file) {
                         moveFile(it.file, it.fileStatus)
                     }
                     if (response != null) {
-                        currentUpload = response.size
+                        currentUpload += response.size
                     }
 
                     if (flagStop) {
                         showProgressUpload(false)
+                        showCountImage(false)
                         showNotificationEnd(2)
                     } else {
                         upload()
@@ -375,8 +385,6 @@ class UploadFileFragment : Fragment(R.layout.fragment_upload_file) {
     private fun showProgressUpload(status: Boolean, numImage: Int? = 0, totalImage: Int? = 0) {
         if (status) {
             binding.apply {
-                pbLoadingUpload.visible()
-                lyProgressUpload.visible()
                 tvNameImage.visible()
 
                 mBuilder!!.setContentText("Subidas/restantes: $numImage / $totalImage")
@@ -450,10 +458,8 @@ class UploadFileFragment : Fragment(R.layout.fragment_upload_file) {
                 val destinationPath = File(path + file.name)
                 if (!destinationPath.exists()) {
                     sourceFile.copyTo(destinationPath)
-                    //listFile.remove(file)
                     sourceFile.delete()
                 } else {
-                    //listFile.remove(file)
                     sourceFile.delete()
                 }
             }
